@@ -1,0 +1,141 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+struct Nod{
+	char nume[100];
+	int an;
+	Nod * ant=NULL, * urm=NULL;
+};
+
+Nod *prim = NULL;
+Nod *ultim = NULL;
+
+void Afisare(Nod * el) {
+ // cat timp mai avem elemente  in lista
+      while (el!= NULL) {
+
+            cout << el->nume << "  " << el->an << endl;
+            el = el->urm;
+         }
+    }
+void adaugareInceput(Nod * &elem, char * nume, int an)
+{
+    // Alocare nod si initializare valoare
+    Nod *el = new Nod;
+    strcpy(el->nume , nume);
+    el->an=an;
+    el->ant=el->urm=NULL;
+        if(elem!=NULL)
+        {
+            el->urm=elem;
+            elem->ant=el;
+        }
+        elem=el;
+}
+
+void adaugareFinal( Nod * &elem, char *nume, int an)
+{
+    Nod *el= new Nod;
+    strcpy(el->nume,nume);
+    el->an=an;
+    el->ant=el->urm=NULL;
+    if(elem==NULL)
+        prim=ultim=el;
+    else
+    {
+        Nod *list = elem;
+        while(list->urm !=NULL)
+            list=list->urm;
+        el->ant=list;
+        list->urm=el;
+        ultim=el;
+    }
+
+ }
+
+
+Nod* cautNume(Nod * el, char *sir)
+{
+    while ( el  != NULL  &&  strcmp(el->nume,  sir) != 0)
+                el = el ->urm;
+    return el;
+}
+
+void stergereElement( Nod * elem)
+{
+   if(elem->ant==NULL && elem->urm==NULL)
+    prim = ultim= NULL;
+   else
+   {
+       if(elem->ant==NULL && elem->urm!=NULL)
+       {
+           elem->urm->ant=NULL;
+           prim=elem->urm;
+       }
+       else
+       if(elem->urm==NULL && elem->ant!=NULL)
+       {
+           elem->ant->urm=NULL;
+           ultim=elem->ant;
+       }
+       else
+       {
+           elem->ant->urm=elem->urm;
+           elem->urm->ant=elem->ant;
+       }
+
+   }
+    delete elem;
+
+}
+
+void stergElemVal(Nod * &el, int nr)
+{
+
+   // daca este primul element din lista
+   if (el->an == nr)
+    {
+       Nod * elSterg = el;
+       el = el->urm;
+       el -> ant = NULL;
+       delete elSterg;
+     }
+     else
+     {
+          // cautam elementul de sters
+            Nod * elem = el;
+            while (elem->urm != NULL)
+               {
+                   elem = elem->urm;
+                    // daca a fost gasit, atunci il stergem
+                    if ( elem->an == nr)
+                        stergereElement(elem);
+               }
+     }
+
+}
+
+int main()
+{
+    Nod *el=new Nod;
+    char nume[100];
+    int an;
+    cin>>nume;
+    cin>>an;
+    strcpy(el->nume,nume);
+    el->an=an;
+    el->ant=el->urm=NULL;
+    prim=ultim=el;
+    cout<<"Primul element al listei"<<endl;
+    Afisare(prim);
+    cout<<"Adaugare la inceputul listei"<<endl;
+    adaugareInceput(prim, "Ionel", 2020);
+    adaugareInceput(prim, "Gigel", 2019);
+    Afisare(prim);
+    adaugareFinal(prim, "apple", 2021);
+    Afisare(prim);
+    cout<<"Stergere nod"<<endl;
+    stergElemVal(prim,2021);
+    Afisare(prim);
+	return 0;
+}
