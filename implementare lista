@@ -1,0 +1,182 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct Nod{
+                 int ID;
+                 char nume[50];
+                 int an;
+                 Nod *urm;
+                 };
+
+class ListaSimpluLeg{
+      private:
+             Nod *prim;
+      public:
+             ListaSimpluLeg(int valID, char valNume[50], int valAn = 0){
+                    prim = new Nod;
+                    prim->ID = valID;
+                    strcpy(prim->nume,valNume);
+                    prim->an = valAn;
+                    prim->urm = NULL;
+                    }
+             ~ListaSimpluLeg(){
+                     while (prim != NULL){
+                           Nod *temp = prim->urm;
+                           delete prim;
+                           prim = temp;
+                           }
+                     }
+
+            void adaugInceput(int valID, char valNume[50], int valAn = 0){
+                  Nod *el = new Nod;
+                  el->ID = valID;
+                  strcpy(el->nume,valNume);
+                  el->an = valAn;
+                  el->urm = prim;
+                  prim = el;
+                  }
+
+             void adaugFinal(int ID, char nume[50],int an = 0){
+                  Nod *el = prim;
+                  while(el->urm != NULL)
+                      el = el->urm;
+                  Nod *nodNou = new Nod;
+                  nodNou->ID = ID;
+                  strcpy(nodNou->nume,nume);
+                  nodNou->an = an;
+                  nodNou->urm = NULL;
+                  el->urm = nodNou;
+                  }
+
+
+
+             void Afisare(){
+
+                  cout<<"Continut lista: "<<endl;
+                  Nod *temp = prim;
+                  while(temp != NULL){
+                             cout<<temp->ID<<": " << temp->nume << ": " <<temp->an<<";  "<<endl;
+                             temp = temp->urm;
+                             }
+                  cout<<endl<<endl;
+                  }
+
+    int lungList(){
+        Nod*el=prim;
+        int lung=0;
+        while(el!=NULL)
+            {
+                lung++;
+                el=el->urm;
+            }
+        return lung;
+        }
+
+
+
+    void  getAn(int an){
+        Nod *temp=prim;
+        while (temp!=NULL){
+            if(temp->an==an)
+                cout<<temp->ID<<" : "<<temp->nume<<" : "<<temp->an<<" ; "<<endl;
+            temp=temp->urm;
+        }
+
+    }
+
+    struct Nod* cautID(int ID){
+        Nod * el=prim;
+        Nod * ret==NULL;
+        while(el!=NULL && ret==NULL){
+            if(el->ID==ID)
+                ret=el;
+            el=el->urm;
+        }
+        return ret;
+    }
+
+
+
+    struct Nod* cautNume(char *nume){
+         Nod * el=prim;
+        Nod * ret==NULL;
+        while(el!==NULL && ret==NULL){
+            if(strcmp(el->nume,nume)==0)
+                ret=el;
+            el=el->urm;
+        }
+        return ret;
+
+        }
+
+            void stergPrimul(){
+                Nod* el=prim;
+                if(prim!=NULL)
+                {
+                    prim=prim->urm;
+                    delete el;
+                }
+                }
+
+            void stergUltim(){
+                Nod* temp=prim;
+                if(prim->urm!=NULL){
+                    while(temp->urm->urm !=NULL)
+                        temp=temp->urm;
+                    delete temp->urm;
+                    temp->urm=NULL;
+                }
+                else
+                    prim=NULL;
+
+                }
+
+
+            void reverse(){
+                 Nod ** ref_prim=&prim;
+                 Nod *ant= NULL;
+                 Nod *el =*ref_prim;
+                 Nod* urm;
+                 while(el!=NULL)
+                 {
+                     urm=el->urm;
+                     el->urm=ant;
+                     ant=el;
+                     el=urm;
+                 }
+                 *ref_prim=ant;
+            }
+
+int main(){
+
+    ListaSimpluLeg myList(1, "nume 1", 1);
+    myList.Afisare();
+    myList.adaugInceput(2,"nume 2", 1);
+    myList.Afisare();
+    myList.adaugFinal(3,"nume 3", 2);
+    myList.Afisare();
+    cout << " Lista are : " << myList.lungList() << " noduri."<< endl;
+    cout<<< "Afisare studenti an" << endl;
+    mylist.getan(1);
+    cout<<"Caut ID"<<endl;
+    Nod* temp=mylist.cautID(2);
+    if(temp!=NULL)
+        cout<<temp->ID<<": "<<temp->nume<<":"<<temp->an<<";" <<endl;
+    else
+        cout<<"ID inexistent"<<endl;
+    cout<<"Caut nume"<<endl;
+    temp=mylist.cautNume("nume 2");
+    if(temp!=NULL)
+        cout<<temp->ID<<": "<<temp->nume<<":"<<temp->an<<";" <<endl;
+    else
+        cout<<"nume inexistent"<<endl;
+   // cout<<"Sterg primul nod"<<endl;
+//myList.stergPrimul();
+    cout<<"reverse"<<endl;
+    myList.reverse();
+    myList.Afisare();
+
+    return 0;
+
+}};
