@@ -1,0 +1,133 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+struct Nod {
+    int ID;
+	char nume[50];
+    int an;
+    Nod *dr, *st;
+};
+
+class BinarySearchTree {
+private:
+    struct Nod *root;
+
+    Nod * creareNodNou(int valID, char * nume,int an) {
+        Nod *nodNou = new Nod;
+        nodNou->ID = valID;
+        strcpy(nodNou->nume,nume);
+        nodNou->an = an;
+        nodNou->dr = NULL;
+        nodNou->st = NULL;
+        return nodNou;
+    }
+    void stergArbore(Nod *nod)
+    {
+        // se foloseste divide et impera
+        if(nod!=NULL)
+            {
+                stergArbore(nod->st);
+                stergArbore(nod->dr);
+                delete nod;
+             }
+    }
+
+   Nod *caut(int vID, Nod *nod)
+   {
+        if((nod==NULL)||(vID==nod->ID))
+            return nod;
+        if(vID<nod->ID)
+            return caut(vID,nod->st);
+        return caut(vID,nod->dr);
+
+   }
+
+
+public:
+
+    BinarySearchTree() {
+        root = NULL;
+     }
+
+    ~BinarySearchTree() {
+       stergArbore();
+     }
+
+    Nod *caut(int ID)
+    {
+        return caut(ID, root);
+     }
+    void stergArbore(){
+     stergArbore(root);
+     }
+
+
+    void adaugNod(int vID, char nume[50]="",int an = 0) {
+        if (root == NULL) root = creareNodNou(vID, nume,an);
+        else {
+            Nod *temp = root;
+            while (true) {
+                if (temp->ID > vID) {
+                    if (temp->st == NULL) {
+                        temp->st = creareNodNou(vID, nume,an);
+                        break;
+                    } else temp = temp->st;
+                } else if (temp->ID < vID) {
+                    if (temp->dr == NULL) {
+                        temp->dr = creareNodNou(vID, nume,an);
+                        break;
+                    } else temp = temp->dr;
+                }
+            }
+        }
+    }
+Nod* getRoot(){
+    return root;
+}
+void inOrdine(Nod* nod) {
+       if(nod != NULL) {
+          inOrdine(nod->st);
+          cout << "ID: "<< nod->ID<<" " << "Nume: " << nod->nume << " an: "<<nod->an << endl ;
+          inOrdine(nod->dr);
+       }
+    }
+void Preordine(Nod* nod)
+    {
+        if(nod!=NULL){
+            cout << "ID: "<< nod->ID<<" " << "Nume: " << nod->nume << " an: "<<nod->an << endl ;
+            Preordine(nod->st);
+            Preordine(nod->dr);
+
+    }
+    }
+void Postordine(Nod* nod)
+    {
+        if(nod!=NULL){
+            Postordine(nod->st);
+            Postordine(nod->dr);
+            cout << "ID: "<< nod->ID<<" " << "Nume: " << nod->nume << " an: "<<nod->an << endl ;
+        }
+    }
+};
+
+int main() {
+
+    BinarySearchTree myBST;
+    Nod *nod;
+
+    myBST.adaugNod(5,"nume 1", 1);
+    myBST.adaugNod(3, "nume 2", 1);
+    myBST.adaugNod(4,"nume 3", 2);
+    myBST.adaugNod(7,"nume 4", 3);
+    nod=myBST.caut(7);
+    cout << "Nodul cautat are: ID"<< nod->ID <<"Nume:"<< nod->nume<< endl;
+    cout<<"Parcurgere in ordine"<<endl;
+	myBST.inOrdine(myBST.getRoot());
+	cout<<"Parcurgere in preordine"<<endl;
+	myBST.Preordine(myBST.getRoot());
+	cout<<"Parcurgere in postordine"<<endl;
+	myBST.Postordine(myBST.getRoot());
+    return 0;
+}
