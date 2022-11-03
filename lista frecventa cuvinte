@@ -1,0 +1,185 @@
+#include <iostream>
+#include <string.h>
+#include <cstring>
+
+using namespace std;
+
+struct Nod{
+	char cuv[100];
+	int nrRep;
+	Nod *urm;
+};
+Nod *prim = NULL;
+Nod *prim2 = NULL;
+
+int cautareMax(Nod* prim);
+void stergere(Nod *&el,char *cuv);
+void adaugare2(Nod *&prim,char *cuvant,int nr);
+
+
+void Afisare(Nod* prim)
+{ if(prim!=NULL)
+  while(prim!=NULL){
+    cout<< prim->cuv<<" "<<prim->nrRep<<endl;
+     prim=prim->urm;}
+     else
+        cout<<"Lista este goala"<<endl;
+}
+
+void adaugare(Nod* &prim,char *cuvant,int repetitii)
+{
+    Nod * el = new Nod;
+ strcpy(el->cuv,strlwr(cuvant));
+ el->nrRep = repetitii;
+el->urm = NULL;
+
+int ok=1;
+    if(prim == NULL)
+        {el->urm=prim;
+	prim=el;	}
+
+    else{
+        Nod *list = prim;
+       while(list->urm != NULL)
+         {if(strcmp(list->cuv,el->cuv)==0 && ok==1)
+            {
+             list->nrRep++;
+             ok=0;
+            }
+            list=list->urm;}
+          if(strcmp(list->cuv,el->cuv)==0 && ok==1)
+                 {list->nrRep++;
+                 ok=0;}
+
+
+
+         if(ok)
+          list->urm=el;
+
+
+  }
+
+}
+
+void desp(char t[])
+{ char *p,sep[]=" .,;!?:";
+    p=strtok(t,sep);
+
+while(p!=0) {
+adaugare(prim,p,1);
+
+
+  p=strtok(NULL,sep);
+                 }
+}
+
+void ordonare(Nod * &prim)
+
+  {  int max=0;
+Nod* c=prim;
+    max=cautareMax(c);
+
+
+while(max>0){
+ c=prim;
+  while (c->urm!=NULL)
+        {if(c->nrRep==max)
+          {adaugare2(prim2,c->cuv,c->nrRep);
+
+     stergere(prim,c->cuv);
+
+
+}
+          c=c->urm;}
+if(c->nrRep==max)
+          {adaugare2(prim2,c->cuv,c->nrRep);
+
+     stergere(prim,c->cuv);}
+Afisare(prim);cout<<endl;
+
+if(prim!=NULL)
+    max=cautareMax(prim);
+  else
+    break;
+}
+
+  }
+
+void stergere(Nod *&el,char *cuv)
+{
+if(el->urm==NULL)
+    {delete el;
+prim=NULL;
+    }
+else
+{if(strcmp(el->cuv,cuv)==0)
+{Nod* elsterg=el;
+         el=el->urm;
+         delete elsterg;
+}
+
+
+         Nod *alt=el;
+      while(alt->urm!=NULL&& strcmp(alt->urm->cuv,cuv)!=0)
+        alt=alt->urm;
+       if(alt->urm!=NULL)
+
+          {    Nod * g=alt->urm;
+              alt->urm=alt->urm->urm;
+                delete g;
+   }
+}
+}
+
+int cautareMax(Nod* elem)
+{
+Nod * el;
+int max;
+el=elem;
+
+if(el->urm!=NULL)
+{max=el->nrRep;
+
+while(el!=NULL)
+    {if(max<el->nrRep)
+      {max=el->nrRep;}
+      el=el->urm;
+      }}
+ else
+    return 0;
+return max;
+}
+void adaugare2(Nod *&prim,char *cuvant,int nr){
+	Nod *el=new Nod;
+	strcpy(el->cuv,cuvant);
+	el->nrRep=nr;
+	el->urm=NULL;
+
+	if(prim==NULL)
+	  prim=el;
+	else
+	{
+		Nod *list=prim;
+		while(list->urm!=NULL)
+		 list=list->urm;
+		list->urm=el;
+	}
+}
+
+
+int main()
+{
+    char t[100];
+cout<<"Scrieti aici propozitia pe care o doriti analizata:";
+cin.getline(t,100);
+cout<<t<<endl;
+desp(t);
+cout<<"Lista 1:\n"<<endl;
+Afisare(prim);
+cout<<endl;
+ordonare(prim);
+cout<<"Lista 2:\n"<<endl;
+Afisare(prim2);
+
+return 0;
+}
